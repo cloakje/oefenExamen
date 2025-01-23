@@ -1,0 +1,150 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Zoekformulier gestyled */
+.search-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-form input,
+.search-form select,
+.search-form button {
+  padding: 10px;
+  font-size: 16px;
+  width: 250px;
+}
+
+.search-by-dropdown {
+  margin-left: 10px;
+}
+
+button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Cards container */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  background-color: white;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+  width: 100px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.card h2 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #777;
+}
+
+/* Hero image styling */
+.hero-image {
+  margin-bottom: 20px;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Hover effect voor de kaarten */
+.card:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+.card-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+.card-detail-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-top: 20px;
+  gap: 40px; /* Vergroot de afstand tussen de kaart en de informatie */
+}
+
+.card-image {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.card-image img {
+  width: 80%; /* Maak de kaart iets kleiner */
+}
+
+.card-info {
+  flex: 2;
+}
+
+.card-info p {
+  margin: 5px 0;
+}
+
+button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.pokemon-logo {
+  max-width: 300px; /* Maak het logo iets groter */
+  height: auto; /* Behoud de originele verhoudingen */
+}
