@@ -214,7 +214,6 @@ button:hover {
   }
 }
 
-
 /* Loading Text */
 .loading {
   font-size: 18px;
@@ -249,4 +248,116 @@ button:hover {
   .card-info {
     text-align: center;
   }
+}
+/* Nieuwe dropdown voor lijst- of afbeeldingweergave */
+.view-mode-dropdown {
+  margin-left: 10px;
+  padding: 10px;
+  font-size: 16px;
+  width: 150px;
+}
+
+/* Standaard kaarten weergave */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Lijstweergave container */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+}
+
+/* Stijlen voor de lijstweergave (bredere rijen) */
+.list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Zorgt ervoor dat alles op dezelfde hoogte staat */
+  width: 95%; /* Breder maken voor meer informatie */
+  max-width: 1200px; /* Maximale breedte instellen */
+  padding: 10px 20px; /* Dunnere rijen, maar met meer ruimte voor tekst */
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  margin-bottom: 5px; /* Minder ruimte tussen rijen */
+}
+
+/* Hover effect */
+.list-item:hover {
+  transform: scale(1.01);
+}
+
+/* Zorgt ervoor dat alle tekst op één lijn blijft */
+.list-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Uitlijning met de naam */
+  justify-content: space-between; /* Houdt de tekst netjes verdeeld */
+  font-size: 14px;
+  color: #444;
+  width: 100%;
+  overflow: hidden; /* Voorkomt dat tekst teveel ruimte inneemt */
+  gap: 30px; /* Meer ruimte tussen de gegevens */
+}
+
+/* Tekstelementen in een rij weergeven */
+.list-content p {
+  margin: 0;
+  white-space: nowrap; /* Voorkomt dat tekst over meerdere regels gaat */
+  font-size: 14px;
+}
+
+/* Naam van de Pokémon iets dikker en groter maken */
+.list-content h2 {
+  font-size: 16px;
+  color: #222;
+  margin: 0;
+  min-width: 180px; /* Vaste breedte zodat de andere info netjes op één lijn blijft */
+}
+
+/* Responsieve weergave */
+@media (max-width: 1024px) {
+  .list-item {
+    width: 98%; /* Iets minder breed op kleinere schermen */
+  }
+
+  .list-content {
+    flex-wrap: wrap; /* Zorgt ervoor dat lange tekst op de volgende regel komt */
+    gap: 15px;
+  }
+
+  .list-content h2 {
+    min-width: unset; /* Laat de naam volledig meeschalen */
+  }
+}
+
+@media (max-width: 768px) {
+  .list-item {
+    flex-direction: column; /* Op mobiel onder elkaar */
+    align-items: flex-start;
+    padding: 10px;
+    width: 100%;
+  }
+
+  .list-content {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+.error-message {
+  color: red;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
 }

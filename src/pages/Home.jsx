@@ -1,110 +1,116 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import picture from "../images/pokemon-logo.jpg"; // Zorg ervoor dat het pad naar het logo klopt
+import picture from "../images/pokemon-logo.jpg";
 
 function Home() {
-  // States voor het opslaan van de Pokémon gegevens, zoektermen, etc.
-  const [pokemons, setPokemon] = useState([]); // De lijst van opgehaalde Pokémon kaarten
-  const [searchTerm, setSearchTerm] = useState(""); // De zoekterm die de gebruiker invoert
-  const [searchBy, setSearchBy] = useState("name"); // De filteroptie: 'name' voor Pokémon naam of 'set.name' voor setnaam
-  const [loading, setLoading] = useState(false); // Laadindicator om te tonen wanneer gegevens opgehaald worden
-  const [searched, setSearched] = useState(false); // Deze wordt gebruikt om de zoekstatus bij te houden (om de stijl van de zoekbalk aan te passen)
-  const navigate = useNavigate(); // Functie voor navigatie naar detailpagina's
-
-  // URL van de API waar de gegevens opgehaald worden
+  const [pokemons, setPokemon] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchBy, setSearchBy] = useState("name");
+  const [displayMode, setDisplayMode] = useState("image");
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+  const [error, setError] = useState(""); // Nieuw: error state
+  const navigate = useNavigate();
   const URL = `https://api.pokemontcg.io/v2/cards`;
 
-  // Functie om de Pokémon kaarten op te halen, afhankelijk van de zoekterm en zoekfilter
   const fetchPokemon = async (query = "", filterBy = "name") => {
-    setLoading(true); // Zet de loading-status op true om de laadindicator weer te geven
+    setLoading(true);
+    setError(""); // Reset eventuele vorige errors
 
-    // Bouw de query afhankelijk van de zoekfilter (naam of setnaam)
     const searchField =
       filterBy === "name" ? `name:${query}` : `set.name:"${query}"`;
 
     try {
-      // Fetch verzoek naar de API om kaarten op te halen
       const response = await fetch(`${URL}?q=${searchField}`, {
         headers: {
-          "X-Api-Key": "8e7bf78f-8765-4840-83d2-4dace725a79b", // API-sleutel voor authenticatie
+          "X-Api-Key": "8e7bf78f-8765-4840-83d2-4dace725a79b",
         },
       });
-      // Zet de opgehaalde data in de state, zorg ervoor dat de data altijd een array is
+
+      if (!response.ok) throw new Error("Fout bij ophalen van gegevens"); // API-fout
+
       const data = await response.json();
-      setPokemon(data.data || []); // Zet de kaarten in de state of een lege array als er geen data is
+
+      if (!data.data || data.data.length === 0) {
+        throw new Error("Geen Pokémon gevonden, probeer een andere zoekterm.");
+      }
+
+      setPokemon(data.data);
     } catch (error) {
-      // Foutafhandeling in geval van netwerk- of API-problemen
-      console.log("Error fetching data:", error);
+      setError(error.message); // Zet de foutmelding
+      setPokemon([]); // Leeg de lijst als er een fout is
     }
-    setLoading(false); // Zet de loading-status op false als de gegevens zijn opgehaald
+
+    setLoading(false);
   };
 
-  // Ophalen van de kaarten bij het laden van de app (bijvoorbeeld de eerste keer)
   useEffect(() => {
-    fetchPokemon(); // Haal de gegevens op zonder een specifieke zoekterm
-  }, []); // Deze useEffect wordt slechts één keer uitgevoerd bij het eerste renderen
+    fetchPokemon();
+  }, []);
 
-  // Functie om de zoekopdracht te verwerken
   const handleSearch = (e) => {
-    e.preventDefault(); // Voorkom dat de pagina opnieuw laadt
-    setSearched(true); // Zet de 'searched' state om de zoekstijl te wijzigen
-    fetchPokemon(searchTerm, searchBy); // Haal kaarten op met de opgegeven zoekterm en filter
+    e.preventDefault();
+    setSearched(true);
+    fetchPokemon(searchTerm, searchBy);
   };
 
   return (
     <div className="App">
-      {/* Afbeelding van het Pokémon-logo bovenaan de pagina */}
       <div className="logo-container">
         <img src={picture} alt="Pokemon Logo" className="pokemon-logo" />
       </div>
 
-      {/* Zoekformulier */}
-      <form
-        onSubmit={handleSearch} // Verwerk de zoekactie bij het indienen van het formulier
-        className={`search-form ${searched ? "searched" : ""}`} // Voeg de 'searched' klasse toe als er gezocht is
-      >
-        {/* Zoekinvoerveld, de placeholder past zich aan afhankelijk van de zoekoptie */}
+      <form onSubmit={handleSearch} className={`search-form ${searched ? "searched" : ""}`}>
         <input
           type="text"
-          placeholder={`Zoek op ${searchBy === "name" ? "Pokémon" : "set"}`} // Dynamische placeholder op basis van de zoekoptie
+          placeholder={`Zoek op ${searchBy === "name" ? "Pokémon" : "set"}`}
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Werk de zoekterm bij bij iedere invoer
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
 
-        {/* Dropdown-menu om te kiezen of er op naam of set wordt gezocht */}
-        <select
-          value={searchBy}
-          onChange={(e) => setSearchBy(e.target.value)} // Wijzig de zoekoptie afhankelijk van de selectie
-          className="search-by-dropdown"
-        >
+        <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)} className="search-by-dropdown">
           <option value="name">Zoek op Pokémon</option>
           <option value="set.name">Zoek op Set</option>
         </select>
 
-        {/* Zoekknop */}
+        <select value={displayMode} onChange={(e) => setDisplayMode(e.target.value)} className="search-by-dropdown">
+          <option value="image">Afbeelding</option>
+          <option value="list">Lijst</option>
+        </select>
+
         <button type="submit">Zoeken</button>
       </form>
 
-      {/* Laadindicator wordt weergegeven als de data nog niet geladen is */}
-      {loading && <p>Loading...</p>}
+      {loading && <p className="loading">Loading...</p>}
 
-      {/* De lijst van Pokémon kaarten wordt hieronder weergegeven */}
-      <div className="cards-container">
-        {/* Map door de opgehaalde kaarten en toon ze in een lijst */}
-        {pokemons.map((pokemon) => (
-          <div
-            className="card"
-            key={pokemon.id} // Zorg ervoor dat elke kaart een unieke sleutel heeft
-            onClick={() => navigate(`/card/${pokemon.id}`)} // Navigeer naar de detailpagina van de kaart bij een klik
-          >
-            <h2>{pokemon.name}</h2> {/* Toon de naam van de Pokémon */}
-            <img src={pokemon.images.small} alt={pokemon.name} />{" "}
-            {/* Toon de afbeelding van de Pokémon */}
-            <p>{pokemon.set.name}</p>{" "}
-            {/* Toon de naam van de set waartoe de kaart behoort */}
-          </div>
-        ))}
-      </div>
+      {error && <p className="error-message">{error}</p>} {/* Toont de error als die er is */}
+
+      {!loading && !error && (
+        <div className={displayMode === "image" ? "cards-container" : "list-container"}>
+          {pokemons.map((pokemon) =>
+            displayMode === "image" ? (
+              <div className="card" key={pokemon.id} onClick={() => navigate(`/card/${pokemon.id}`)}>
+                <h2>{pokemon.name}</h2>
+                <img src={pokemon.images.small} alt={pokemon.name} />
+                <p>{pokemon.set.name}</p>
+              </div>
+            ) : (
+              <div className="list-item" key={pokemon.id} onClick={() => navigate(`/card/${pokemon.id}`)}>
+                <div className="list-content">
+                  <h2>{pokemon.name}</h2>
+                  <p><strong>HP:</strong> {pokemon.hp || "Onbekend"}</p>
+                  <p><strong>Type(s):</strong> {pokemon.types ? pokemon.types.join(", ") : "Onbekend"}</p>
+                  <p><strong>Zeldzaamheid:</strong> {pokemon.rarity || "Onbekend"}</p>
+                  <p><strong>Set:</strong> {pokemon.set.name}</p>
+                  <p><strong>Uitgever:</strong> {pokemon.set.series}</p>
+                  <p><strong>Nummer:</strong> {pokemon.number}</p>
+                  <p><strong>Marktprijs:</strong> {pokemon.cardmarket?.prices?.averageSellPrice ? `€${pokemon.cardmarket.prices.averageSellPrice.toFixed(2)}` : "Onbekend"}</p>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      )}
     </div>
   );
 }
